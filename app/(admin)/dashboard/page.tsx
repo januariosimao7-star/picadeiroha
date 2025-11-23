@@ -14,6 +14,9 @@ import CMSTab from "@/components/admin/CMSTab";
 import CalendarTab from "@/components/admin/CalendarTab";
 import NotificationsTab from "@/components/admin/NotificationsTab";
 import AvailabilityTab from "@/components/admin/AvailabilityTab";
+import ProfessorsTab from "@/components/admin/ProfessorsTab";
+import HorsesTab from "@/components/admin/HorsesTab";
+import ServicesTab from "@/components/admin/ServicesTab";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -68,6 +71,9 @@ export default function DashboardPage() {
           {[
             { id: 'overview', label: 'Resumo', icon: '📊' },
             { id: 'calendar', label: 'Calendário', icon: '📆' },
+            { id: 'professors', label: 'Professores', icon: '👨‍🏫' },
+            { id: 'horses', label: 'Cavalos', icon: '🐴' },
+            { id: 'services', label: 'Serviços', icon: '🎯' },
             { id: 'availability', label: 'Disponibilidade', icon: '🏆' },
             { id: 'notifications', label: 'Notificações', icon: '🔔' },
             { id: 'analytics', label: 'Analytics', icon: '📈' },
@@ -219,6 +225,9 @@ export default function DashboardPage() {
             )}
 
             {activeTab === 'calendar' && <CalendarTab />}
+            {activeTab === 'professors' && <ProfessorsTab />}
+            {activeTab === 'horses' && <HorsesTab />}
+            {activeTab === 'services' && <ServicesTab />}
             {activeTab === 'availability' && <AvailabilityTab />}
             {activeTab === 'notifications' && <NotificationsTab />}
             {activeTab === 'analytics' && <AnalyticsTab />}

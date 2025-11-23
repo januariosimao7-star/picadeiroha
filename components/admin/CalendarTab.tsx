@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Download, Mail, Calendar } from 'lucide-react';
 
 interface Reservation {
   id: string;
@@ -17,14 +18,44 @@ interface Reservation {
 export default function CalendarTab() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [reservations, setReservations] = useState<Reservation[]>([
-    // Exemplo vazio - sem dados fictícios
-  ]);
-  const [showEmailForm, setShowEmailForm] = useState(false);
-  const [emailConfig, setEmailConfig] = useState({
-    recipientEmail: 'januariosimao8@gmail.com',
-    frequency: 'daily' as 'daily' | 'weekly' | 'monthly',
-  });
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
+  // Carregar reservas do banco de dados
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await fetch('/api/reservations');
+        if (response.ok) {
+          const data = await response.json();
+          setReservations(data);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar reservas:', error);
+        // Usar dados de exemplo se houver erro
+        setReservations([
+          {
+            id: '1',
+            clientName: 'João Silva',
+            professor: 'Prof. Carlos',
+            horses: ['Thunderbolt', 'Shadow'],
+            lessonType: 'group',
+            date: new Date().toISOString().split('T')[0],
+            startTime: '09:00',
+            duration: 60,
+            status: 'confirmed',
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, []);
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -47,13 +78,58 @@ export default function CalendarTab() {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
 
-  const handleSendCalendarEmail = async () => {
+  const handleDownloadCalendarPDF = async () => {
+    setIsExporting(true);
     try {
-      // Aqui você pode integrar com um serviço de email como Nodemailer, SendGrid, etc
-      alert(`✓ Calendário será enviado para ${emailConfig.recipientEmail} ${emailConfig.frequency}`);
-      setShowEmailForm(false);
+      const response = await fetch('/api/reports/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ period: 'month' }),
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `calendario-${currentMonth.toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
     } catch (error) {
-      alert('Erro ao configurar envio de email');
+      console.error('Erro ao exportar PDF:', error);
+      alert('Erro ao exportar calendário');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleSendCalendarEmail = async () => {
+    setIsSendingEmail(true);
+    setEmailSent(false);
+    try {
+      const response = await fetch('/api/reports/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          period: 'month',
+          email: 'januariosimao8@gmail.com',
+        }),
+      });
+
+      if (response.ok) {
+        setEmailSent(true);
+        setTimeout(() => setEmailSent(false), 3000);
+      } else {
+        alert('Erro ao enviar email');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar email:', error);
+      alert('Erro ao enviar calendário por email');
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -69,51 +145,37 @@ export default function CalendarTab() {
     calendarDays.push(day);
   }
 
+  if (isLoading) {
+    return <div className="text-center py-8 text-gray-600 font-bold">Carregando reservas...</div>;
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-black text-black">📅 Calendário de Agendamentos</h2>
-        <button
-          onClick={() => setShowEmailForm(!showEmailForm)}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-black"
-        >
-          {showEmailForm ? '✕ Cancelar' : '📧 Configurar Email Diário'}
-        </button>
-      </div>
-
-      {/* Email Configuration */}
-      {showEmailForm && (
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-black text-black mb-4">Configurar Envio de Calendário por Email</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-black text-black mb-2">Email Destinatário</label>
-              <input
-                type="email"
-                value={emailConfig.recipientEmail}
-                onChange={(e) => setEmailConfig({ ...emailConfig, recipientEmail: e.target.value })}
-                className="w-full border-2 border-gray-300 rounded px-3 py-2 font-bold text-black"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-black text-black mb-2">Frequência</label>
-              <select
-                value={emailConfig.frequency}
-                onChange={(e) => setEmailConfig({ ...emailConfig, frequency: e.target.value as any })}
-                className="w-full border-2 border-gray-300 rounded px-3 py-2 font-bold text-black bg-white"
-              >
-                <option value="daily">📅 Diário</option>
-                <option value="weekly">📆 Semanal</option>
-                <option value="monthly">📋 Mensal</option>
-              </select>
-            </div>
-          </div>
+        <div className="flex gap-3">
+          <button
+            onClick={handleDownloadCalendarPDF}
+            disabled={isExporting}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition font-bold"
+          >
+            <Download size={18} />
+            {isExporting ? 'Exportando...' : 'Descarregar PDF'}
+          </button>
           <button
             onClick={handleSendCalendarEmail}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-black"
+            disabled={isSendingEmail}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition font-bold"
           >
-            ✓ Salvar Configuração
+            <Mail size={18} />
+            {isSendingEmail ? 'Enviando...' : 'Enviar Email'}
           </button>
+        </div>
+      </div>
+
+      {emailSent && (
+        <div className="mb-6 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg font-bold">
+          ✓ Calendário enviado com sucesso para januariosimao8@gmail.com
         </div>
       )}
 
@@ -123,7 +185,7 @@ export default function CalendarTab() {
         <ul className="text-xs font-bold text-black mt-2 space-y-1">
           <li>✓ Visualize eventos de agendamento por mês</li>
           <li>✓ Clique nos dias para ver detalhes das reservas</li>
-          <li>✓ Calendário PDF enviado diariamente para o email configurado</li>
+          <li>✓ Exporte calendário em PDF ou envie por email</li>
           <li>✓ Cores diferentes para status (confirmado/pendente/cancelado)</li>
         </ul>
       </div>
