@@ -8,6 +8,5 @@
     "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "@paypal_client_id",
     "PAYPAL_SECRET": "@paypal_secret"
   },
-  "envPrefix": "NEXT_PUBLIC_",
   "framework": "nextjs"
 }
