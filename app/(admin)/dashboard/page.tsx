@@ -11,6 +11,9 @@ import ReportsTab from "@/components/admin/ReportsTab";
 import SettingsTab from "@/components/admin/SettingsTab";
 import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import CMSTab from "@/components/admin/CMSTab";
+import CalendarTab from "@/components/admin/CalendarTab";
+import NotificationsTab from "@/components/admin/NotificationsTab";
+import AvailabilityTab from "@/components/admin/AvailabilityTab";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -64,6 +67,9 @@ export default function DashboardPage() {
         <nav className="flex-1 py-6 space-y-2 overflow-y-auto px-3">
           {[
             { id: 'overview', label: 'Resumo', icon: '📊' },
+            { id: 'calendar', label: 'Calendário', icon: '📆' },
+            { id: 'availability', label: 'Disponibilidade', icon: '🏆' },
+            { id: 'notifications', label: 'Notificações', icon: '🔔' },
             { id: 'analytics', label: 'Analytics', icon: '📈' },
             { id: 'cms', label: 'CMS', icon: '✏️' },
             { id: 'products', label: 'Produtos', icon: '🛍️' },
@@ -212,6 +218,9 @@ export default function DashboardPage() {
             </div>
             )}
 
+            {activeTab === 'calendar' && <CalendarTab />}
+            {activeTab === 'availability' && <AvailabilityTab />}
+            {activeTab === 'notifications' && <NotificationsTab />}
             {activeTab === 'analytics' && <AnalyticsTab />}
             {activeTab === 'cms' && <CMSTab />}
             {activeTab === 'products' && <ProductsTab />}
