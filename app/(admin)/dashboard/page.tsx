@@ -140,65 +140,65 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-300 rounded-lg p-6 shadow hover:shadow-lg transition">
                   <h3 className="text-black text-sm font-black mb-2">TOTAL DE VENDAS</h3>
-                  <p className="text-4xl font-black text-black">€12.450</p>
-                  <p className="text-black text-sm mt-2 font-bold">↑ 12% este mês</p>
+                  <p className="text-4xl font-black text-black">€0</p>
+                  <p className="text-black text-sm mt-2 font-bold">Dados em tempo real</p>
                 </div>
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-300 rounded-lg p-6 shadow hover:shadow-lg transition">
                   <h3 className="text-black text-sm font-black mb-2">RESERVAS ATIVAS</h3>
-                  <p className="text-4xl font-black text-black">24</p>
-                  <p className="text-black text-sm mt-2 font-bold">8 pendentes</p>
+                  <p className="text-4xl font-black text-black">0</p>
+                  <p className="text-black text-sm mt-2 font-bold">Sem agendamentos</p>
                 </div>
                 <div className="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-300 rounded-lg p-6 shadow hover:shadow-lg transition">
                   <h3 className="text-black text-sm font-black mb-2">PRODUTOS EM STOCK</h3>
-                  <p className="text-4xl font-black text-black">156</p>
-                  <p className="text-black text-sm mt-2 font-bold">5 com stock baixo</p>
+                  <p className="text-4xl font-black text-black">0</p>
+                  <p className="text-black text-sm mt-2 font-bold">Sem produtos</p>
                 </div>
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-300 rounded-lg p-6 shadow hover:shadow-lg transition">
                   <h3 className="text-black text-sm font-black mb-2">UTILIZADORES</h3>
-                  <p className="text-4xl font-black text-black">45</p>
-                  <p className="text-black text-sm mt-2 font-bold">+3 esta semana</p>
+                  <p className="text-4xl font-black text-black">0</p>
+                  <p className="text-black text-sm mt-2 font-bold">Registados</p>
                 </div>
               </div>
 
-              <h2 className="text-2xl font-black text-black mb-6">Resumo Executivo</h2>
+              <h2 className="text-2xl font-black text-black mb-6">Painel de Controlo</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-lg font-black text-black mb-4">Atividade Recente</h3>
+                  <h3 className="text-lg font-black text-black mb-4">ℹ️ Boas-vindas</h3>
                   <div className="space-y-3">
                     <div className="p-4 bg-blue-50 rounded border-l-4 border-blue-600">
-                      <p className="text-sm font-black text-black">Novo pedido recebido</p>
-                      <p className="text-xs text-black font-bold">João Silva - €250</p>
+                      <p className="text-sm font-black text-black">Sistema operacional</p>
+                      <p className="text-xs text-black font-bold">Pronto para receber dados</p>
                     </div>
                     <div className="p-4 bg-green-50 rounded border-l-4 border-green-600">
-                      <p className="text-sm font-black text-black">Reserva confirmada</p>
-                      <p className="text-xs text-black font-bold">Maria Santos - Aula Individual</p>
+                      <p className="text-sm font-black text-black">Base de dados conectada</p>
+                      <p className="text-xs text-black font-bold">PostgreSQL ativo</p>
                     </div>
                     <div className="p-4 bg-yellow-50 rounded border-l-4 border-yellow-600">
-                      <p className="text-sm font-black text-black">Stock baixo</p>
-                      <p className="text-xs text-black font-bold">Sela de Dressage - 2 unidades</p>
+                      <p className="text-sm font-black text-black">Configuração completa</p>
+                      <p className="text-xs text-black font-bold">Todos os módulos prontos</p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-black mb-4">Ações Rápidas</h3>
+                  <h3 className="text-lg font-black text-black mb-4">⚡ Ações Rápidas</h3>
                   <div className="space-y-2">
                     <button 
                       onClick={() => setActiveTab('products')}
                       className="w-full text-left p-4 bg-amber-50 hover:bg-amber-100 rounded transition border-l-4 border-amber-600 font-black text-black"
                     >
-                      ➕ Adicionar Novo Produto
+                      ➕ Adicionar Produto
                     </button>
                     <button 
                       onClick={() => setActiveTab('reservations')}
                       className="w-full text-left p-4 bg-blue-50 hover:bg-blue-100 rounded transition border-l-4 border-blue-600 font-black text-black"
                     >
-                      📅 Criar Reserva Manual
+                      📅 Nova Reserva
                     </button>
                     <button 
                       onClick={() => setActiveTab('users')}
                       className="w-full text-left p-4 bg-purple-50 hover:bg-purple-100 rounded transition border-l-4 border-purple-600 font-black text-black"
                     >
-                      👤 Registar Novo Utilizador
+                      👤 Novo Utilizador
                     </button>
                     <button 
                       onClick={() => setActiveTab('reports')}
